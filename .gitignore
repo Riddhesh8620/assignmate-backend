@@ -13,3 +13,4 @@ obj/
 .vs/
 /AssignmateFunctional.API/AssignmateFunctional.API.csproj.user
 /AssignmateFunctional.API/AssignmateFunctional.API.csproj.user
+bin/

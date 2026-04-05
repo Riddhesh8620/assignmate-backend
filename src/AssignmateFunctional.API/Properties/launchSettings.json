@@ -2,9 +2,15 @@
   "profiles": {
     "http": {
       "commandName": "Project",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      },
+			"environmentVariables": {
+				"ASPNETCORE_ENVIRONMENT": "Development",
+				"Jwt__SecretKey": "ijc910v0190v01vjoiejv9j1ijcpoaspcpq",
+				"Npgsql__Host": "aws-1-ap-northeast-2.pooler.supabase.com",
+				"Npgsql__Port": "5432",
+				"Npgsql__Database": "postgres",
+				"Npgsql__Username": "postgres.dyrppiucndioickwzvfp",
+				"Npgsql__Password": "gpv315FniUrxH9Ou"
+			},
       "dotnetRunMessages": true,
       "applicationUrl": "http://localhost:5272"
     },

@@ -1,3 +1,5 @@
 <Solution>
+  <Project Path="src/AssignmateFunctional.Common/AssignmateFunctional.Common.csproj" Id="f4fc6019-5031-4bc9-803a-07f6db4a5ecc" />
+  <Project Path="src/AssignmateFunctional.DAL/AssignmateFunctional.DAL.csproj" Id="10246049-3629-4931-81d1-6002b1382a49" />
   <Project Path="src/AssignmateFunctional.API/AssignmateFunctional.API.csproj" />
 </Solution>

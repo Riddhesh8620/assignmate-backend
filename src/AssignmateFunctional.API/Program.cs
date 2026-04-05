@@ -1,23 +1,46 @@
-var builder = WebApplication.CreateBuilder(args);
+using AssignmateFunctional.API.Auth.Jwt;
+using AssignmateFunctional.API.Business;
+using AssignmateFunctional.API.DAL.Data.EfCore;
+using AssignmateFunctional.API.DAL.Dependency;
+using Microsoft.EntityFrameworkCore;
 
-// Add services to the container.
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
+// Services
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi(); // keeps OpenAPI document generation
+builder.Services.AddEndpointsApiExplorer(); // REQUIRED for Swagger
+builder.Services.AddSwaggerGen(); // Swagger generator
+builder.Services.AddJwtAuth(builder.Configuration);
 
-var app = builder.Build();
+builder.Services.RegisterDbContext(builder.Configuration);
 
-// Configure the HTTP request pipeline.
+builder.Services.AddScoped<IUserManagementService, UserManagementService>();
+
+WebApplication app = builder.Build();
+app.UsePathBase("/api");
+// Pipeline
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+	_ = app.MapOpenApi(); // your existing endpoint
+
+	_ = app.UseSwagger(); // generates /swagger/v1/swagger.json
+	_ = app.UseSwaggerUI(options =>
+	{
+		options.SwaggerEndpoint("/swagger/v1/swagger.json", "Assignmate API v1");
+		options.RoutePrefix = string.Empty; // opens Swagger at root (http://localhost:xxxx/)
+	});
+}
+
+using (IServiceScope scope = app.Services.CreateScope())
+{
+	ServiceDbContext serviceDbContext = scope.ServiceProvider.GetRequiredService<ServiceDbContext>();
+	await serviceDbContext.Database.MigrateAsync();
 }
 
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 
-app.Run();
+await app.RunAsync();
