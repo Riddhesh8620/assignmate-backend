@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace AssignmateFunctional.Common.Common;
+namespace AssignmateFunctional.Common.Helpers;
 
 public static class PasswordHelper
 {
@@ -10,5 +10,10 @@ public static class PasswordHelper
         using var sha = SHA256.Create();
         var bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(password));
         return Convert.ToBase64String(bytes);
+    }
+
+    public static string BCryptHash(string password)
+    {
+        return BCrypt.Net.BCrypt.HashPassword(password);
     }
 }

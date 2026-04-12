@@ -1,8 +1,9 @@
-﻿using AssignmateFunctional.Common.Common;
+﻿using AssignmateFunctional.Common.DTO;
 
 namespace AssignmateFunctional.API.Business;
 
 public interface IUserManagementService
 {
-	Task<Guid> RegisterAsync(RegisterUserDto registerUserDto);
+	Task<UserStoreDto> HandleLoginAsync(LoginDto loginDto);
+	Task<UserStoreDto> RegisterAsync(RegisterUserDto registerUserDto);
 }

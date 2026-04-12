@@ -1,19 +1,21 @@
 {
   "profiles": {
-    "http": {
-      "commandName": "Project",
+		"http": {
+			"commandName": "Project",
+			"launchBrowser": true,
+			"launchUrl": "",
 			"environmentVariables": {
 				"ASPNETCORE_ENVIRONMENT": "Development",
 				"Jwt__SecretKey": "ijc910v0190v01vjoiejv9j1ijcpoaspcpq",
-				"Npgsql__Host": "aws-1-ap-northeast-2.pooler.supabase.com",
+				"Npgsql__Host": "localhost",
 				"Npgsql__Port": "5432",
-				"Npgsql__Database": "postgres",
-				"Npgsql__Username": "postgres.dyrppiucndioickwzvfp",
-				"Npgsql__Password": "gpv315FniUrxH9Ou"
+				"Npgsql__Database": "prepdb",
+				"Npgsql__Username": "postgres",
+				"Npgsql__Password": "qwerty"
 			},
-      "dotnetRunMessages": true,
-      "applicationUrl": "http://localhost:5272"
-    },
+			"dotnetRunMessages": true,
+			"applicationUrl": "http://localhost:5000"
+		},
     "https": {
       "commandName": "Project",
       "environmentVariables": {

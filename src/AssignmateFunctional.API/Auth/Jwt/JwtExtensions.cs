@@ -29,7 +29,7 @@ public static class JwtExtensions
 					ValidAudience = jwtOptions.Audience,
 					IssuerSigningKey = new SymmetricSecurityKey(key),
 
-					ClockSkew = TimeSpan.Zero // 🔥 avoid extra expiry delay
+					ClockSkew = TimeSpan.Zero // avoid extra expiry delay
 				};
 			});
 

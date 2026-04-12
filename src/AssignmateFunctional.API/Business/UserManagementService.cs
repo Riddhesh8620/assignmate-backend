@@ -1,15 +1,22 @@
-﻿using AssignmateFunctional.API.Common;
+﻿using AssignmateFunctional.API.Auth.Jwt;
 using AssignmateFunctional.API.DAL.DAO;
+using AssignmateFunctional.API.DAL.Services;
 using AssignmateFunctional.API.Entities;
-using AssignmateFunctional.Common.Common;
+using AssignmateFunctional.Common.DTO;
+using AssignmateFunctional.Common.Enums;
+using AssignmateFunctional.Common.Helpers;
+using AssignmateFunctional.DAL.DAL.Factory;
 using Microsoft.EntityFrameworkCore;
 
 namespace AssignmateFunctional.API.Business;
 
-public class UserManagementService(IServiceDao<AssignmateUser> _userDao)
+public class UserManagementService(
+	IServiceDao<AssignmateUser> _userDao,
+	IAuditScope auditScope,
+	IJwtTokenService jwtTokenService)
 	: IUserManagementService
 {
-	public async Task<Guid> RegisterAsync(RegisterUserDto registerUserDto)
+	public async Task<UserStoreDto> RegisterAsync(RegisterUserDto registerUserDto)
 	{
 
 		UserRoles userRole = Enum.TryParse(registerUserDto.Role, ignoreCase: true, out UserRoles role)
@@ -30,8 +37,13 @@ public class UserManagementService(IServiceDao<AssignmateUser> _userDao)
 
 		AssignmateUser assignmateUser = new()
 		{
+			Id = Guid.CreateVersion7(),
+			AddedOn = DateTime.UtcNow,
+			UpdatedOn = DateTime.UtcNow,
+			AddedBy = auditScope.GetUserId(),
+			UpdatedBy = auditScope.GetUserId(),
 			Email = registerUserDto.Email,
-			Password = PasswordHelper.Hash(registerUserDto.Password),
+			Password = PasswordHelper.BCryptHash(registerUserDto.Password),
 			FirstName = registerUserDto.Name,
 			PhoneNumber = registerUserDto.Phone,
 			Role = userRole,
@@ -41,9 +53,28 @@ public class UserManagementService(IServiceDao<AssignmateUser> _userDao)
 
 		int affectedRows = await _userDao.SaveChangesAsync();
 
-		return affectedRows > 0
-			? assignmateUser.Id
-			: throw new InvalidOperationException("Something went wrong while saving to DB");
+		UserStoreDto userStoreDto = assignmateUser.GetUserStore();
 
+		return affectedRows > 0
+			? userStoreDto
+			: throw new InvalidOperationException(
+				"Something went wrong while saving to DB");
+	}
+
+	public async Task<UserStoreDto> HandleLoginAsync(LoginDto loginDto)
+	{
+		AssignmateUser user = await _userDao
+			.Query()
+			.FirstOrDefaultAsync(p =>
+			p.Email == loginDto.EmailId)
+			?? throw new UnauthorizedAccessException("User does not exists");
+
+
+		bool isPasswordValid = BCrypt.Net.BCrypt.Verify(loginDto.Password, user.Password);
+		UserStoreDto userStoreDto = user.GetUserStore();
+
+		return !isPasswordValid
+			? throw new UnauthorizedAccessException("Incorrect password entered.")
+			: userStoreDto;
 	}
 }

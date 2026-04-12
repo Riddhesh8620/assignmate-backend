@@ -1,15 +1,15 @@
 ﻿using AssignmateFunctional.API.DAL.Services;
 using AssignmateFunctional.API.Entities;
+using AssignmateFunctional.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace AssignmateFunctional.API.DAL.Data.EfCore;
 
-public class ServiceDbContext(
-    DbContextOptions<ServiceDbContext> options,
-    IAuditScope auditScope)
-    : BaseDbContext(options, auditScope)
+public class ServiceDbContext(DbContextOptions<ServiceDbContext> options)
+    : BaseDbContext(options)
 {
     public DbSet<AssignmateUser> AssignmateUsers { get; set; }
+    public DbSet<Assignments> Assignments { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -29,5 +29,9 @@ public class ServiceDbContext(
         _ = modelBuilder.Entity<AssignmateUser>()
             .HasIndex(p => new { p.Role, p.Email })
             .IsUnique();
+
+        _ = modelBuilder.Entity<Assignments>()
+            .Property(p => p.Status)
+            .HasConversion<string>();
     }
 }
