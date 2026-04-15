@@ -49,6 +49,7 @@ dotnet_diagnostic.CA1311.severity = silent
 [*.{cs,vb}]
 dotnet_diagnostic.CA1873.severity = silent
 # Naming rules
+dotnet_diagnostic.CS1591.severity = none
 
 dotnet_naming_rule.interface_should_be_begins_with_i.severity = suggestion
 dotnet_naming_rule.interface_should_be_begins_with_i.symbols = interface

@@ -1,7 +1,4 @@
-﻿using Microsoft.IdentityModel.Tokens;
-using System.Text;
-
-namespace AssignmateFunctional.API.Auth.Jwt;
+﻿namespace AssignmateFunctional.API.Auth.Jwt;
 
 public static class JwtExtensions
 {
@@ -9,29 +6,29 @@ public static class JwtExtensions
 	{
 		_ = services.Configure<JwtOptions>(config.GetSection("Jwt"));
 
-		JwtOptions jwtOptions = config.GetSection("Jwt").Get<JwtOptions>()!;
+		//JwtOptions jwtOptions = config.GetSection("Jwt").Get<JwtOptions>()!;
 
-		byte[] key = Encoding.UTF8.GetBytes(jwtOptions.SecretKey);
+		//byte[] key = Encoding.UTF8.GetBytes(jwtOptions.SecretKey);
 
-		_ = services.AddAuthentication("Bearer")
-			.AddJwtBearer("Bearer", options =>
-			{
-				options.RequireHttpsMetadata = true;
+		//_ = services.AddAuthentication("Bearer")
+		//	.AddJwtBearer("Bearer", options =>
+		//	{
+		//		options.RequireHttpsMetadata = false;
 
-				options.TokenValidationParameters = new TokenValidationParameters
-				{
-					ValidateIssuer = true,
-					ValidateAudience = true,
-					ValidateIssuerSigningKey = true,
-					ValidateLifetime = true,
+		//		options.TokenValidationParameters = new TokenValidationParameters
+		//		{
+		//			ValidateIssuer = true,
+		//			ValidateAudience = true,
+		//			ValidateIssuerSigningKey = true,
+		//			ValidateLifetime = true,
 
-					ValidIssuer = jwtOptions.Issuer,
-					ValidAudience = jwtOptions.Audience,
-					IssuerSigningKey = new SymmetricSecurityKey(key),
+		//			ValidIssuer = jwtOptions.Issuer,
+		//			ValidAudience = jwtOptions.Audience,
+		//			IssuerSigningKey = new SymmetricSecurityKey(key),
 
-					ClockSkew = TimeSpan.Zero // avoid extra expiry delay
-				};
-			});
+		//			ClockSkew = TimeSpan.Zero // avoid extra expiry delay
+		//		};
+		//	});
 
 		_ = services.AddScoped<IJwtTokenService, JwtTokenService>();
 

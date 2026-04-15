@@ -4,12 +4,13 @@ namespace AssignmateFunctional.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class BaseController
+public abstract class BaseController
 	: ControllerBase
 {
 
 	protected void TokenPasrses(string token)
 	{
+		Response.Headers.Authorization = $"Bearer {token}";
 		Response.Cookies.Append(
 			"Bearer",
 			token,

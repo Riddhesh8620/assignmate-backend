@@ -3,7 +3,7 @@
 public interface IAuditScope
 {
 	Guid GetUserId();
-	Guid GetRoleId();
+    string GetRoleId();
     void SetUserId(Guid userId);
-    void SetRoleId(Guid roleId);
+    void SetRoleId(string roleId);
 }

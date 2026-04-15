@@ -9,7 +9,7 @@ public class ServiceDbContext(DbContextOptions<ServiceDbContext> options)
     : BaseDbContext(options)
 {
     public DbSet<AssignmateUser> AssignmateUsers { get; set; }
-    public DbSet<Assignments> Assignments { get; set; }
+    public DbSet<Assignment> Assignments { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -30,8 +30,14 @@ public class ServiceDbContext(DbContextOptions<ServiceDbContext> options)
             .HasIndex(p => new { p.Role, p.Email })
             .IsUnique();
 
-        _ = modelBuilder.Entity<Assignments>()
+        _ = modelBuilder.Entity<Assignment>()
             .Property(p => p.Status)
             .HasConversion<string>();
+
+        _ = modelBuilder.Entity<Assignment>()
+            .HasIndex(p => p.Status);
+       
+        _ = modelBuilder.Entity<Assignment>()
+            .HasIndex(p => p.Subject);
     }
 }

@@ -34,7 +34,6 @@ public class UserManagementService(
 			throw new BadHttpRequestException("User already exists");
 		}
 
-
 		AssignmateUser assignmateUser = new()
 		{
 			Id = Guid.CreateVersion7(),
@@ -45,6 +44,7 @@ public class UserManagementService(
 			Email = registerUserDto.Email,
 			Password = PasswordHelper.BCryptHash(registerUserDto.Password),
 			FirstName = registerUserDto.Name,
+			PhoneISD = registerUserDto.PhoneISD,
 			PhoneNumber = registerUserDto.Phone,
 			Role = userRole,
 		};

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AssignmateFunctional.DAL.Entities;
 
-public class Assignments : BaseEntity
+public class Assignment : BaseEntity
 {
 	[ForeignKey(nameof(AssignmentOwner))]
 	public Guid UserId { get; set; }
@@ -16,13 +16,13 @@ public class Assignments : BaseEntity
 	public string Topic { get; set; } = default!;
 	public string? Description { get; set; }
 	public uint NumPages { get; set; } = 1;
-	[Column(TypeName = "TIMESTAMP")]
+	[Column(TypeName = "TIMESTAMPTZ")]
 	public DateTime Deadline { get; set; }
 	public double Budget { get; set; }
 	public string? SpecialInstructions { get; set; }
 	public AssignmentStatus Status { get; set; } = AssignmentStatus.open;
 	public Guid? CollegeId { get; set; }
-	public string FileName { get; set; }
-	public byte[] FileUrl { get; set; }
+	public string? FileName { get; set; }
+	public byte[]? FileContent { get; set; }
 	public virtual AssignmateUser AssignmentOwner { get; set; } = null!;
 }

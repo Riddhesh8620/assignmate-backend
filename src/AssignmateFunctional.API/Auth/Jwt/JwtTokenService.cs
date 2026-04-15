@@ -14,13 +14,14 @@ public sealed class JwtTokenService(
 	private readonly JwtOptions _options = options.Value;
 
 	/// <inheritdoc/>
-	public string GenerateToken(Guid userId, IEnumerable<string> roles)
+	public string GenerateToken(Guid userId, string roles)
 	{
 		List<Claim> claims =
 	[
 		new(JwtRegisteredClaimNames.Sub, userId.ToString()),
+		new(TokenConstants.UserId, userId.ToString()),
+		new(TokenConstants.RoleId, roles),
 		new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-		.. roles.Select(role => new Claim(ClaimTypes.Role, role)),
 	];
 
 		SymmetricSecurityKey key = new(Encoding.UTF8.GetBytes(_options.SecretKey));
@@ -72,4 +73,11 @@ public sealed class JwtTokenService(
 			return null;
 		}
 	}
+}
+
+internal static class TokenConstants
+{
+	internal static string UserId = "user_id";
+	internal static string RoleId = "role_id";
+
 }

@@ -18,6 +18,8 @@ public class AssignmateUser : BaseEntity
     public string UserName { get; set; } = $"User-{Guid.CreateVersion7()}";
     [JsonIgnore]
     public required string Password { get; set; }
+    [Column(TypeName = "INT4")]
+    public uint PhoneISD { get; set; }
     [Column(TypeName = "varchar(50)")]
     public string PhoneNumber { get; set; } = default!;
     public UserRoles Role { get; set; }

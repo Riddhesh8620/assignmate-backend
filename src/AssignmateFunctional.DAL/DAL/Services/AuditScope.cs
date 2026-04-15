@@ -3,12 +3,12 @@
 public class AuditScope : IAuditScope
 {
     private Guid UserId;
-    private Guid RoleId;
+    private string RoleId;
 
     public AuditScope() { }
 
 
-    public Guid GetRoleId()
+    public string GetRoleId()
     {
         return RoleId;
     }
@@ -18,7 +18,7 @@ public class AuditScope : IAuditScope
         return UserId;
     }
 
-    public void SetRoleId(Guid roleId)
+    public void SetRoleId(string roleId)
     {
         RoleId = roleId;
     }

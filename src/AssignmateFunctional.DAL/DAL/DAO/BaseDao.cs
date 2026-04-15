@@ -54,7 +54,7 @@ public class BaseDao<T> : IBaseDao<T>
 
     public async Task<T?> GetByIdAsync(params object[] keys)
     {
-        return await _dbSet.FindAsync(keys);
+        return await _dbSet.AsNoTracking().FirstOrDefaultAsync(e => EF.Property<object>(e, "Id").Equals(keys[0]));
     }
 
     public IQueryable<T> Query(bool tracking = false)

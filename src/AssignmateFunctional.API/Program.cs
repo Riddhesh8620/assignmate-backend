@@ -1,4 +1,5 @@
 using AssignmateFunctional.API.Auth.Jwt;
+using AssignmateFunctional.API.Auth.Middleware;
 using AssignmateFunctional.API.Business;
 using AssignmateFunctional.API.DAL.Data.EfCore;
 using AssignmateFunctional.API.DAL.Dependency;
@@ -13,6 +14,9 @@ builder.Services.AddOpenApi(); // keeps OpenAPI document generation
 builder.Services.AddEndpointsApiExplorer(); // REQUIRED for Swagger
 builder.Services.AddSwaggerGen(); // Swagger generator
 
+builder.Services.AddScoped<ExceptionHandlingMiddleware>();
+builder.Services.AddScoped<JwtTokenValidationMiddleware>();
+
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddCors(options =>
@@ -20,9 +24,10 @@ builder.Services.AddCors(options =>
 	options.AddPolicy("AllowFrontend", policy =>
 	{
 		_ = policy.WithOrigins("http://localhost:3000")
-		.AllowAnyHeader()
 		.AllowAnyMethod()
-		.AllowCredentials();
+		.AllowAnyHeader()
+		.AllowCredentials()
+		.WithExposedHeaders("Content-Disposition");
 	});
 });
 
@@ -32,10 +37,12 @@ builder.Services.AddJwtAuth(builder.Configuration);
 builder.Services.RegisterDbContext(builder.Configuration);
 
 builder.Services.AddScoped<IUserManagementService, UserManagementService>();
+builder.Services.AddScoped<IAssignmentManagementService, AssignmentManagementService>();
 builder.Services.RegisterCommonPackage();
 
 WebApplication app = builder.Build();
 app.UsePathBase("/api");
+
 // Pipeline
 if (app.Environment.IsDevelopment())
 {
@@ -44,7 +51,7 @@ if (app.Environment.IsDevelopment())
 	_ = app.UseSwagger(); // generates /swagger/v1/swagger.json
 	_ = app.UseSwaggerUI(options =>
 	{
-		options.SwaggerEndpoint("/swagger/v1/swagger.json", "Assignmate API v1");
+		options.SwaggerEndpoint("swagger/v1/swagger.json", "Assignmate API v1");
 		options.RoutePrefix = string.Empty; // opens Swagger at root (http://localhost:xxxx/)
 	});
 }
@@ -55,10 +62,11 @@ using (IServiceScope scope = app.Services.CreateScope())
 	await serviceDbContext.Database.MigrateAsync();
 }
 
-app.UseCors("AllowFrontend");
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseHttpsRedirection();
-app.UseAuthentication();
-app.UseAuthorization();
+app.UseCors("AllowFrontend");
+app.UseMiddleware<JwtTokenValidationMiddleware>();
+
 app.MapControllers();
 
 await app.RunAsync();
