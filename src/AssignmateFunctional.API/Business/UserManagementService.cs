@@ -66,7 +66,7 @@ public class UserManagementService(
 		AssignmateUser user = await _userDao
 			.Query()
 			.FirstOrDefaultAsync(p =>
-			p.Email == loginDto.EmailId)
+			p.Email == loginDto.EmailId, new CancellationToken())
 			?? throw new UnauthorizedAccessException("User does not exists");
 
 
